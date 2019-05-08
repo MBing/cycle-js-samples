@@ -3,3 +3,7 @@ node_modules
 
 # IDE
 .idea
+
+# other folders / files
+dist
+public/main.js

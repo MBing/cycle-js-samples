@@ -1,3 +1,4 @@
+// This is the Model View Intent example --> all changes are on the bottom { view, intent, model }
 import xs from 'xstream/index';
 import { run } from '@cycle/run';
 import {
@@ -13,7 +14,7 @@ import {
 } from '@cycle/dom';
 import { makeHTTPDriver } from '@cycle/http';
 import { API_KEY, BASE_URL } from './api';
-import format from 'date-fns';
+import format from 'date-fns/format';
 
 const CATEGORY = 'forecast';
 const INIT_CITY = 'London';
@@ -22,7 +23,7 @@ const DAYS = 7;
 const getForm = () =>
     div('.form', [
         input('#location-input'),
-        button('#location-btn', 'Get Forecasts'),
+        button('#location-btn', 'Get Forecasts (MVI)'),
     ]);
 
 const generateNext5Days = forecasts => {
@@ -81,25 +82,37 @@ const getRequest = city => ({
     category: CATEGORY,
 });
 
-const main = sources => {
-    const input$ = sources.DOM.select('#location-input')
+const model = (actions$, HTTP) => {
+    return HTTP.select(CATEGORY)
+        .flatten()
+        .map(parseResponse)
+        .map(simplifyData);
+};
+
+const intent = DOM => {
+    const input$ = DOM.select('#location-input')
         .events('focusout')
         .map(evt => evt.target.value);
-    const btn$ = sources.DOM.select('#location-btn').events('mousedown');
-    const merged$ = xs.combine(input$, btn$);
-    const request$ = merged$
+    const btn$ = DOM.select('#location-btn').events('mousedown');
+
+    return xs
+        .combine(input$, btn$)
         .map(([city]) => getRequest(city))
         .startWith(getRequest(INIT_CITY));
-    const response$ = sources.HTTP.select(CATEGORY).flatten();
-    const vdom$ = response$
-        .map(parseResponse)
-        .map(simplifyData)
-        .map(generateVDOM)
-        .startWith('Loading...');
+};
+
+const view = state$ => {
+    return state$.map(generateVDOM).startWith(h1('Loading...'));
+};
+
+const main = sources => {
+    const actions$ = intent(sources.DOM);
+    const state$ = model(actions$, sources.HTTP);
+    const vdom$ = view(state$);
 
     return {
         DOM: vdom$,
-        HTTP: request$,
+        HTTP: actions$,
     };
 };
 

@@ -13,7 +13,7 @@ import {
 } from '@cycle/dom';
 import { makeHTTPDriver } from '@cycle/http';
 import { API_KEY, BASE_URL } from './api';
-import format from 'date-fns';
+import format from 'date-fns/format';
 
 const CATEGORY = 'forecast';
 const INIT_CITY = 'London';

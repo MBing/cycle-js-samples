@@ -27,11 +27,11 @@ const main = sources => {
 
     // The standard mechanism is already implementing a simple form of lens:
     // https://cycle.js.org/api/state.html#cycle-state-source-usage-how-to-share-data-among-components-or-compute-derived-data
-    const locationSink = isolate(CityForm, { state: cityLens })(sources);
-    const currentForecastSink = isolate(CurrentForecast, { state: cityLens })(
+    const locationSinks = isolate(CityForm, { state: cityLens })(sources);
+    const currentForecastSinks = isolate(CurrentForecast, { state: cityLens })(
         sources
     );
-    const futureForecastSink = isolate(FutureForecast, { state: cityLens })(
+    const futureForecastSinks = isolate(FutureForecast, { state: cityLens })(
         sources
     );
 
@@ -39,9 +39,9 @@ const main = sources => {
     const httpRequest$ = locationSink.HTTP;
 
     const vdom$ = view(
-        locationSink.DOM,
-        currentForecastSink.DOM,
-        futureForecastSink.DOM
+        locationSinks.DOM,
+        currentForecastSinks.DOM,
+        futureForecastSinks.DOM
     );
 
     return {

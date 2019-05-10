@@ -1,3 +1,4 @@
+import xs from 'xstream';
 import { div, h3, img, p } from '@cycle/dom';
 import format from 'date-fns/format';
 
@@ -19,7 +20,7 @@ const generateNext5Days = forecasts => {
         ])
     );
 
-    return div('.forecasts-container', list);
+    return xs.of(div('.forecasts-container', list));
 };
 
 const view = state$ => state$.map(state => generateNext5Days(state.forecasts));

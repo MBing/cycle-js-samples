@@ -15,10 +15,7 @@ const generateVDOM = ([formVNode, currentVNode, futureVNode]) =>
 const view = (locationDOM$, currentForecastDOM$, futureForecastDOM$) => {
     return xs
         .combine(locationDOM$, currentForecastDOM$, futureForecastDOM$)
-        .map(combinedStreams => {
-            debugger;
-            return generateVDOM(combinedStreams);
-        })
+        .map(combinedStreams => generateVDOM(combinedStreams))
         .startWith(h1('Loading...'));
 };
 
@@ -29,9 +26,9 @@ const main = sources => {
     };
 
     // The standard mechanism is already implementing a simple form of lens:
-    const locationSink = isolate(CityForm, 'location')(sources);
-    const currentForecastSink = isolate(CurrentForecast, 'current')(sources);
-    const futureForecastSink = isolate(FutureForecast, 'forecasts')(sources);
+    const locationSink = isolate(CityForm, cityLens)(sources);
+    const currentForecastSink = isolate(CurrentForecast, cityLens)(sources);
+    const futureForecastSink = isolate(FutureForecast, cityLens)(sources);
 
     const locationReducer$ = locationSink.state;
     const httpRequest$ = locationSink.HTTP;

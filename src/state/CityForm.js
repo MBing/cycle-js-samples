@@ -7,26 +7,31 @@ const INIT_CITY = 'London';
 const DAYS = 7;
 const CITY_SEARCH = 'citySearchAction';
 
-const getRequest = city => ({
-    type: CITY_SEARCH,
-    city,
-    url: `${BASE_URL}?key=${API_KEY}&q=${city}&days=${DAYS}`,
-    category: CATEGORY,
-});
+const getRequest = city =>
+    xs.of({
+        type: CITY_SEARCH,
+        city,
+        url: `${BASE_URL}?key=${API_KEY}&q=${city}&days=${DAYS}`,
+        category: CATEGORY,
+    });
 
 const parseResponse = response => JSON.parse(response.text);
-const simplifyData = data => ({
-    city: data.location.name,
-    current: data.current,
-    forecasts: data.forecast.forecastday,
-});
+const simplifyData = data => prev =>
+    xs.of({
+        ...prev,
+        city: data.location.name,
+        current: data.current,
+        forecasts: data.forecast.forecastday,
+    });
 
 const generateCityForm = location =>
-    div('.form', [
-        h1(`Your forecasts for ${location.city}`),
-        input('#location-input', { props: { value: location.city } }),
-        button('#location-btn', 'Get Forecasts (MVI S)'),
-    ]);
+    xs.of(
+        div('.form', [
+            h1(`Your forecasts for ${location.city}`),
+            input('#location-input', { props: { value: location.city } }),
+            button('#location-btn', 'Get Forecasts (MVI S)'),
+        ])
+    );
 
 const model = (actions$, HTTP) => {
     const reducer$ = HTTP.select(CATEGORY)
@@ -49,11 +54,7 @@ const intent = DOM => {
         .startWith(getRequest(INIT_CITY));
 };
 
-const view = state$ =>
-    state$.map(state => {
-        debugger;
-        return generateCityForm(state);
-    });
+const view = state$ => state$.map(state => generateCityForm(state));
 
 export const CityForm = sources => {
     const state$ = sources.state.stream;

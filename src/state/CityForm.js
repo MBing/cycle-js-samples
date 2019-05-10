@@ -33,14 +33,11 @@ const generateCityForm = location =>
         ])
     );
 
-const model = (actions$, HTTP) => {
-    const reducer$ = HTTP.select(CATEGORY)
+const model = (actions$, HTTP) =>
+    HTTP.select(CATEGORY)
         .flatten()
         .map(parseResponse)
         .map(simplifyData);
-
-    return reducer$;
-};
 
 const intent = DOM => {
     const input$ = DOM.select('#location-input')

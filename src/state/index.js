@@ -26,6 +26,7 @@ const main = sources => {
     };
 
     // The standard mechanism is already implementing a simple form of lens:
+    // https://cycle.js.org/api/state.html#cycle-state-source-usage-how-to-share-data-among-components-or-compute-derived-data
     const locationSink = isolate(CityForm, cityLens)(sources);
     const currentForecastSink = isolate(CurrentForecast, cityLens)(sources);
     const futureForecastSink = isolate(FutureForecast, cityLens)(sources);

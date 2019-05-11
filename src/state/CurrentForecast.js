@@ -1,6 +1,8 @@
 import { div, h2, h3, img, p } from '@cycle/dom';
 import format from 'date-fns/format';
 
+import './currentForecast.css';
+
 const generateCurrentForecast = forecast =>
     div('.current-forecast-container', [
         div('.today-forecast', [
@@ -11,7 +13,7 @@ const generateCurrentForecast = forecast =>
             }),
             p('.status', forecast.condition.text),
         ]),
-        h3(format(forecast.last_update, 'dddd Do MMMM YYYY')),
+        h3(format(forecast.last_updated, 'dddd Do MMMM YYYY')),
         h2(`${forecast.temp_c}C`),
         p(`humidity: ${forecast.humidity}%`),
     ]);

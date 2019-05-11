@@ -35,8 +35,8 @@ const main = sources => {
         sources
     );
 
-    const locationReducer$ = locationSink.state;
-    const httpRequest$ = locationSink.HTTP;
+    const locationReducer$ = locationSinks.state;
+    const httpRequest$ = locationSinks.HTTP;
 
     const vdom$ = view(
         locationSinks.DOM,
